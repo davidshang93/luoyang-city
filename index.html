@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>洛阳城</title>
+<link rel="icon" href="data:,">
+<style>
+  html, body { margin: 0; height: 100%; overflow: hidden; background: #bcd3e6; font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; color: #fff; user-select: none; }
+  #app canvas { display: block; }
+  .panel { position: fixed; background: rgba(18, 22, 28, .62); border-radius: 10px; backdrop-filter: blur(6px); }
+  #mmWrap { left: 16px; top: 16px; width: 190px; padding: 6px; border-radius: 104px 104px 14px 14px; text-align: center; }
+  #minimap { width: 190px; height: 190px; border-radius: 50%; display: block; }
+  #place { font-size: 13px; padding: 6px 4px 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  #speed { right: 22px; bottom: 20px; padding: 8px 18px; text-align: right; display: none; }
+  #speedNum { font-size: 44px; font-weight: 700; font-variant-numeric: tabular-nums; line-height: 1; }
+  #speed small { opacity: .7; font-size: 12px; }
+  #help { left: 16px; bottom: 16px; padding: 10px 14px; font-size: 12.5px; line-height: 1.75; }
+  #help.hidden { display: none; }
+  #help b { display: inline-block; min-width: 62px; color: #ffd66b; font-weight: 600; }
+  #hint { left: 50%; bottom: 90px; transform: translateX(-50%); padding: 8px 16px; font-size: 14px; display: none; }
+  #toast { left: 50%; top: 22px; transform: translateX(-50%); padding: 9px 20px; font-size: 17px; font-weight: 600; opacity: 0; transition: opacity .4s; pointer-events: none; }
+  #fps { position: fixed; right: 10px; top: 8px; font-size: 11px; opacity: .55; }
+  #brand { position: fixed; right: 22px; top: 26px; font-size: 20px; font-weight: 800; letter-spacing: 4px; text-shadow: 0 1px 6px rgba(0,0,0,.5); opacity: .9; }
+  #brand small { display: block; font-size: 10px; letter-spacing: 3px; font-weight: 500; text-align: right; opacity: .8; }
+  #map { position: fixed; inset: 0; background: rgba(10, 14, 18, .82); display: none; align-items: center; justify-content: center; gap: 14px; z-index: 20; }
+  #mapCanvas { height: min(92vh, 900px); aspect-ratio: 1000 / 971; border-radius: 10px; cursor: crosshair; box-shadow: 0 6px 30px rgba(0,0,0,.5); }
+  #mapSide { width: 250px; height: min(92vh, 900px); display: flex; flex-direction: column; }
+  #mapSide h3 { margin: 0 0 4px; font-size: 18px; } #mapSide p { margin: 0 0 8px; font-size: 12px; opacity: .75; }
+  #mapList { flex: 1; overflow-y: auto; background: rgba(255,255,255,.07); border-radius: 10px; padding: 6px 10px 12px; }
+  #mapList h4 { margin: 12px 0 5px; font-size: 13px; background: #fff; display: inline-block; padding: 1px 8px; border-radius: 9px; }
+  #mapList button { display: block; width: 100%; text-align: left; background: none; border: 0; color: #fff; font-size: 13.5px; padding: 5px 6px; border-radius: 6px; cursor: pointer; font-family: inherit; }
+  #mapList button:hover { background: rgba(255,255,255,.16); }
+  #mapClose { margin-top: 8px; padding: 9px; border: 0; border-radius: 8px; background: #c0392b; color: #fff; font-size: 14px; cursor: pointer; font-family: inherit; }
+  #loading { position: fixed; inset: 0; background: linear-gradient(#7a2318, #2a0e0a); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 50; transition: opacity .8s; }
+  #loading.done { opacity: 0; pointer-events: none; }
+  #loading h1 { font-size: 64px; letter-spacing: 18px; margin: 0 0 6px 18px; font-weight: 800; color: #f6d98a; }
+  #loading h2 { font-size: 14px; letter-spacing: 8px; margin: 0 0 40px; font-weight: 400; opacity: .8; }
+  #loadTrack { width: 300px; height: 5px; background: rgba(255,255,255,.18); border-radius: 3px; overflow: hidden; }
+  #loadBar { height: 100%; width: 0; background: #f6d98a; transition: width .25s; }
+  #loadText { margin-top: 12px; font-size: 13px; opacity: .85; }
+</style>
+<script type="importmap">{ "imports": { "three": "./vendor/three/three.module.min.js", "three/addons/": "./vendor/three/addons/", "three/examples/jsm/": "./vendor/three/addons/", "postprocessing": "./vendor/postprocessing/index.js", "n8ao": "./vendor/n8ao/N8AO.js", "@dgreenheck/ez-tree": "./vendor/ez-tree/ez-tree.es.js" } }</script>
+</head>
+<body>
+<div id="app"></div>
+<div id="mmWrap" class="panel"><canvas id="minimap" width="190" height="190"></canvas><div id="place">洛阳</div></div>
+<div id="brand">洛阳城<small>LUOYANG · 1:1</small></div>
+<div id="fps"></div>
+<div id="toast" class="panel"></div>
+<div id="hint" class="panel">按 <b style="color:#ffd66b">F</b> 上车</div>
+<div id="speed" class="panel"><span id="speedNum">0</span><br><small>km/h</small></div>
+<div id="help" class="panel">
+  <div><b>W A S D</b>走路 / 开车</div>
+  <div><b>Shift</b>跑步　<b style="min-width:40px">空格</b>手刹</div>
+  <div><b>F</b>上车 / 下车（路上的车都能开）</div>
+  <div><b>鼠标拖动</b>转视角　<b style="min-width:40px">滚轮</b>远近　<b style="min-width:30px">Q E</b>转视角</div>
+  <div><b>M</b>地图 · 点地标或地图任意位置传送</div>
+  <div><b>N</b>召唤车　<b style="min-width:24px">R</b>回到路上　<b style="min-width:24px">H</b>隐藏帮助</div>
+  <div><b>G</b>画质 高/中/低　<b style="min-width:24px">L</b>白天/夜晚</div>
+</div>
+<div id="map">
+  <canvas id="mapCanvas" width="1000" height="971"></canvas>
+  <div id="mapSide"><h3>洛阳地图</h3><p>点击右侧地标，或直接点地图上任意位置传送。</p><div id="mapList"></div><button id="mapClose">关闭 (M / Esc)</button></div>
+</div>
+<div id="loading"><h1>洛阳城</h1><h2>LUOYANG · OPEN WORLD</h2><div id="loadTrack"><div id="loadBar"></div></div><div id="loadText">启动中…</div></div>
+<script type="module" src="./src/main.js"></script>
+</body>
+</html>

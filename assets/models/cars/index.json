@@ -1,0 +1,185 @@
+{
+ "sedan": {
+  "file": "sedan.glb",
+  "type": "sedan",
+  "length": 5.357,
+  "width": 2.033,
+  "height": 1.411,
+  "zMin": -2.679,
+  "zMax": 2.679,
+  "wheelRadius": 0.352,
+  "wheelBase": 2.982,
+  "plates": {
+   "F": [
+    0,
+    0.316,
+    2.689
+   ],
+   "R": [
+    0,
+    0.756,
+    -2.549
+   ]
+  },
+  "source": "CARLA Simulator (carla.org), CC BY 4.0; glTF conversion: Valdrada (M. K. Turkcan)"
+ },
+ "truck": {
+  "file": "truck.glb",
+  "type": "truck",
+  "length": 10.21,
+  "width": 3.05,
+  "height": 3.81,
+  "zMin": -5.105,
+  "zMax": 5.105,
+  "wheelRadius": 0.419,
+  "wheelBase": 6.1,
+  "plates": {
+   "F": [
+    0,
+    0.62,
+    5.113
+   ],
+   "R": [
+    0,
+    0.74,
+    -4.837
+   ]
+  },
+  "source": "Valdrada (M. K. Turkcan), CC BY 4.0"
+ },
+ "taxi": {
+  "file": "taxi.glb",
+  "type": "taxi",
+  "length": 5.358,
+  "width": 1.929,
+  "height": 1.572,
+  "zMin": -2.679,
+  "zMax": 2.679,
+  "wheelRadius": 0.349,
+  "wheelBase": 2.917,
+  "plates": {
+   "F": [
+    0,
+    0.42,
+    2.682
+   ],
+   "R": [
+    0,
+    0.77,
+    -2.59
+   ]
+  },
+  "source": "CARLA Simulator (carla.org), CC BY 4.0; glTF conversion: Valdrada (M. K. Turkcan)"
+ },
+ "suv": {
+  "file": "suv.glb",
+  "type": "suv",
+  "length": 5.601,
+  "width": 2.414,
+  "height": 2.063,
+  "zMin": -2.803,
+  "zMax": 2.798,
+  "wheelRadius": 0.466,
+  "wheelBase": 3.279,
+  "plates": {
+   "F": [
+    0,
+    0.69,
+    2.769
+   ],
+   "R": [
+    0,
+    1.06,
+    -2.733
+   ]
+  },
+  "source": "CARLA Simulator (carla.org), CC BY 4.0; glTF conversion: Valdrada (M. K. Turkcan)"
+ },
+ "police": {
+  "file": "police.glb",
+  "type": "police",
+  "length": 5.242,
+  "width": 2.107,
+  "height": 1.683,
+  "zMin": -2.62,
+  "zMax": 2.622,
+  "wheelRadius": 0.358,
+  "wheelBase": 3.041,
+  "plates": {
+   "R": [
+    0,
+    0.624,
+    -2.62
+   ]
+  },
+  "source": "CARLA Simulator (carla.org), CC BY 4.0; glTF conversion: Valdrada (M. K. Turkcan)",
+  "paint": 15922164
+ },
+ "sports": {
+  "file": "sports.glb",
+  "type": "sports",
+  "length": 4.623,
+  "width": 1.857,
+  "height": 1.275,
+  "zMin": -2.312,
+  "zMax": 2.312,
+  "wheelRadius": 0.319,
+  "wheelBase": 2.829,
+  "plates": {
+   "F": [
+    0,
+    0.332,
+    2.222
+   ],
+   "R": [
+    0,
+    0.357,
+    -2.196
+   ]
+  },
+  "source": "CARLA Simulator (carla.org), CC BY 4.0; glTF conversion: Valdrada (M. K. Turkcan)"
+ },
+ "van": {
+  "file": "van.glb",
+  "type": "van",
+  "length": 5.929,
+  "width": 2.33,
+  "height": 2.763,
+  "zMin": -2.967,
+  "zMax": 2.962,
+  "wheelRadius": 0.366,
+  "wheelBase": 3.662,
+  "plates": {
+   "F": [
+    0,
+    0.405,
+    2.949
+   ]
+  },
+  "source": "CARLA Simulator (carla.org), CC BY 4.0; glTF conversion: Valdrada (M. K. Turkcan)"
+ },
+ "bus": {
+  "file": "bus.glb",
+  "type": "bus",
+  "length": 6.568,
+  "width": 2.536,
+  "height": 2.736,
+  "zMin": -3.282,
+  "zMax": 3.286,
+  "wheelRadius": 0.405,
+  "wheelBase": 3.636,
+  "plates": {
+   "F": [
+    0,
+    0.5,
+    3.216
+   ],
+   "R": [
+    0,
+    0.47,
+    -3.145
+   ]
+  },
+  "source": "CARLA Simulator (carla.org), CC BY 4.0; glTF conversion: Valdrada (M. K. Turkcan)"
+ }
+}

@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><title>地标预览</title>
+<style>html,body{margin:0;height:100%;background:#9fc3df;overflow:hidden;font:13px -apple-system,"PingFang SC",sans-serif}#info{position:fixed;left:8px;top:8px;background:rgba(0,0,0,.55);color:#fff;padding:6px 10px;border-radius:6px;white-space:pre}</style>
+<script type="importmap">{ "imports": { "three": "./vendor/three/three.module.min.js", "three/addons/": "./vendor/three/addons/", "three/examples/jsm/": "./vendor/three/addons/", "postprocessing": "./vendor/postprocessing/index.js", "n8ao": "./vendor/n8ao/N8AO.js", "@dgreenheck/ez-tree": "./vendor/ez-tree/ez-tree.es.js" } }</script>
+</head><body><div id="info">loading…</div>
+<script type="module">
+// Same renderer as the game (HDR sky, PBR, shadows, AO).
+// preview.html?id=<landmark id>&view=front|back|left|right|top|iso|iso2|low&dist=1.0&colliders=1&night=1&q=high|medium|low
+//   or ?model=cars&fn=buildCar&args=["sedan"]     (any module under src/models)
+//   or ?glb=<name in assets/models>
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { createGfx } from './src/core/gfx.js';
+import { pbr } from './src/core/mats.js';
+const q = new URLSearchParams(location.search), id = q.get('id'), view = q.get('view') || 'iso', distK = +(q.get('dist') || 1);
+const info = document.getElementById('info');
+try {
+  const gfx = await createGfx({ quality: q.get('q') || 'high', fov: 45, far: 20000, fogDensity: 0.00015, preserveDrawingBuffer: true });
+  const { scene, camera: cam, sun } = gfx;
+  const gm = pbr('cobblestone_floor_08', { color: 0xd8d4c8 });
+  const gg = new THREE.PlaneGeometry(6000, 6000); { const uv = gg.attributes.uv; for (let i = 0; i < uv.count; i++) uv.setXY(i, uv.getX(i) * 1500, uv.getY(i) * 1500); }
+  const ground = new THREE.Mesh(gg, gm); ground.rotation.x = -Math.PI / 2; ground.receiveShadow = true; scene.add(ground);
+  let obj, meta = {};
+  if (q.get('model')) { const mod = await import(`./src/models/${q.get('model')}.js?t=${Date.now()}`); obj = mod[q.get('fn')](...(JSON.parse(q.get('args') || '[]'))); }
+  else if (q.get('glb')) { const { GLTFLoader } = await import('three/addons/loaders/GLTFLoader.js'); obj = (await new GLTFLoader().loadAsync(`./assets/models/${q.get('glb')}.glb`)).scene; }
+  else { const kit = (await import('./src/landmarks/_kit.js')).default; const mod = await import(`./src/landmarks/${id}.js?t=${Date.now()}`); obj = mod.build(kit); meta = mod.meta || {}; }
+  obj.traverse(o => { if (o.isMesh) { o.castShadow = !o.material.transparent; o.receiveShadow = true; } });
+  scene.add(obj);
+  if (q.get('colliders') && meta.colliders) for (const c of meta.colliders) { const m = new THREE.Mesh(new THREE.BoxGeometry(c.w, 3, c.d), new THREE.MeshBasicMaterial({ color: 0xff0000, wireframe: true })); m.position.set(c.x, 1.5, c.z); m.rotation.y = c.rot || 0; scene.add(m); }
+  const bb = new THREE.Box3().setFromObject(obj), size = bb.getSize(new THREE.Vector3()), c = bb.getCenter(new THREE.Vector3());
+  const R = Math.max(size.x, size.z, size.y * 1.4) * 0.5 + (size.x < 30 ? 0.5 : 5);
+  const dirs = { front: [0, 0.35, 1], back: [0, 0.35, -1], left: [-1, 0.35, 0], right: [1, 0.35, 0], top: [0.001, 1, 0.02], iso: [0.75, 0.6, 1], iso2: [-0.75, 0.6, -1], low: [0.5, 0.08, 1] };
+  const d = new THREE.Vector3(...(dirs[view] || dirs.iso)).normalize().multiplyScalar(R * 2.6 * distK);
+  cam.position.copy(c).add(d); if (cam.position.y < 0.6) cam.position.y = 0.6;
+  const tgt = new THREE.Vector3(c.x + (+q.get('tx') || 0), c.y * 0.8 + (+q.get('ty') || 0), c.z + (+q.get('tz') || 0)); cam.lookAt(tgt);
+  cam.near = Math.max(0.05, R / 500); cam.updateProjectionMatrix();
+  const controls = new OrbitControls(cam, gfx.renderer.domElement); controls.target.copy(tgt); controls.update();
+  // fit the sun shadow box to the model
+  gfx.fitShadow(c, Math.max(8, R * 1.5) / 2.5);
+  if (q.get('night')) gfx.setNight(true);
+  let tris = 0, meshes = 0; obj.traverse(o => { if (o.isMesh) { meshes++; tris += (o.geometry.index ? o.geometry.index.count : o.geometry.attributes.position.count) / 3 * (o.isInstancedMesh ? o.count : 1); } });
+  info.textContent = `${id || q.get('model') || q.get('glb')}  ${size.x.toFixed(size.x < 30 ? 2 : 0)} x ${size.y.toFixed(size.x < 30 ? 2 : 0)}(h) x ${size.z.toFixed(size.x < 30 ? 2 : 0)} m\n${Math.round(tris)} tris, ${meshes} meshes · view=${view}`;
+  let n = 0; (function loop() { requestAnimationFrame(loop); controls.update(); gfx.render(); if (++n === 20) { document.title = 'ready'; window.__ready = true; } })();
+} catch (e) { info.textContent = 'ERROR: ' + (e.stack || e); document.title = 'error'; window.__error = String(e.stack || e); console.error(e); }
+</script></body></html>

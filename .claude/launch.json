@@ -1,0 +1,7 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    { "name": "luoyang", "runtimeExecutable": "node", "runtimeArgs": ["tools/server.mjs", "5188"], "port": 5188 },
+    { "name": "luoyang-5199", "runtimeExecutable": "node", "runtimeArgs": ["tools/server.mjs", "5199"], "port": 5199 }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "name": "luoyang-city",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "洛阳城 — 洛阳 1:1 开放世界驾驶探索 demo (Three.js)",
+  "scripts": {
+    "start": "node tools/server.mjs",
+    "data": "node tools/build-data.mjs",
+    "check": "node tools/check-landmark.mjs"
+  },
+  "devDependencies": {
+    "three": "0.170.0",
+    "osm-pbf-parser-node": "^1.1.4"
+  }
+}

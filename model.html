@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><title>模型查看（v2 画质）</title>
+<style>html,body{margin:0;height:100%;overflow:hidden;background:#000;font:13px -apple-system,"PingFang SC",sans-serif}#info{position:fixed;left:10px;top:10px;background:rgba(0,0,0,.55);color:#fff;padding:6px 10px;border-radius:6px;white-space:pre}</style>
+<script type="importmap">{"imports":{"three":"./vendor/three/three.module.min.js","three/addons/":"./vendor/three/addons/"}}</script>
+</head><body><div id="info">loading…</div>
+<script type="module">
+// model.html?m=<name in assets/models>&az=35&el=18&dist=1.2&raw=1 (raw=1 loads assets/hy3d/<name>.glb)
+import * as THREE from 'three';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { RGBELoader } from 'three/addons/loaders/RGBELoader.js';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+import { GTAOPass } from 'three/addons/postprocessing/GTAOPass.js';
+import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
+
+const q = new URLSearchParams(location.search), name = q.get('m') || 'yingtianmen_t2m', info = document.getElementById('info');
+const renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2)); renderer.setSize(innerWidth, innerHeight);
+renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = +(q.get('exp') || 0.85);
+renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+document.body.appendChild(renderer.domElement);
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(42, innerWidth / innerHeight, 0.5, 8000);
+const controls = new OrbitControls(camera, renderer.domElement);
+
+try {
+  // sky + image-based lighting
+  const hdr = await new RGBELoader().loadAsync('./assets/hdri/sky_day_2k.hdr');
+  hdr.mapping = THREE.EquirectangularReflectionMapping; scene.background = hdr; scene.environment = hdr; scene.environmentIntensity = 0.9; scene.backgroundBlurriness = 0.02;
+  const sun = new THREE.DirectionalLight(0xfff1dc, 3.2); sun.castShadow = true; sun.shadow.mapSize.set(4096, 4096); sun.shadow.bias = -0.0004; sun.shadow.normalBias = 0.4; scene.add(sun, sun.target);
+
+  // PBR ground
+  const tl = new THREE.TextureLoader(), T = (p, srgb) => { const t = tl.load(p); t.wrapS = t.wrapT = THREE.RepeatWrapping; t.repeat.set(160, 160); t.anisotropy = 16; if (srgb) t.colorSpace = THREE.SRGBColorSpace; return t; };
+  const g = q.get('ground') || 'cobblestone_floor_08';
+  const arm = T(`./assets/textures/${g}/arm.jpg`);
+  const ground = new THREE.Mesh(new THREE.PlaneGeometry(1600, 1600), new THREE.MeshStandardMaterial({ map: T(`./assets/textures/${g}/diff.jpg`, true), normalMap: T(`./assets/textures/${g}/nor.jpg`), roughnessMap: arm, metalnessMap: arm, aoMap: arm }));
+  ground.rotation.x = -Math.PI / 2; ground.receiveShadow = true; scene.add(ground);
+
+  const gltf = await new GLTFLoader().loadAsync(q.get('raw') ? `./assets/hy3d/${name}.glb` : `./assets/models/${name}.glb`);
+  const obj = gltf.scene; let tris = 0;
+  obj.traverse(o => { if (o.isMesh) { o.castShadow = o.receiveShadow = true; tris += (o.geometry.index ? o.geometry.index.count : o.geometry.attributes.position.count) / 3; if (o.material.map) o.material.map.anisotropy = 16; } });
+  scene.add(obj);
+  const bb = new THREE.Box3().setFromObject(obj), size = bb.getSize(new THREE.Vector3()), c = bb.getCenter(new THREE.Vector3());
+  // 1.75 m person for scale
+  const man = new THREE.Mesh(new THREE.CapsuleGeometry(0.28, 1.2, 4, 8), new THREE.MeshStandardMaterial({ color: 0xd04030 })); man.position.set(bb.max.x * 0.3, 0.88, bb.max.z + 6); man.castShadow = true; scene.add(man);
+  const R = Math.max(size.x, size.z, size.y * 1.3) * 0.5, az = (+(q.get('az') || 30)) * Math.PI / 180, el = (+(q.get('el') || 16)) * Math.PI / 180, d = R * 2.7 * (+(q.get('dist') || 1));
+  camera.position.set(c.x + Math.sin(az) * Math.cos(el) * d, Math.max(1.6, c.y + Math.sin(el) * d), c.z + Math.cos(az) * Math.cos(el) * d);
+  controls.target.set(c.x, c.y * 0.75, c.z); controls.update();
+  sun.target.position.copy(c); sun.position.set(c.x - R * 1.4, R * 2.4, c.z + R * 1.8);
+  Object.assign(sun.shadow.camera, { left: -R * 1.6, right: R * 1.6, top: R * 1.6, bottom: -R * 1.6, near: 1, far: R * 8 }); sun.shadow.camera.updateProjectionMatrix();
+  scene.fog = new THREE.FogExp2(0xc9d8e6, 0.00045);
+
+  const composer = new EffectComposer(renderer);
+  composer.addPass(new RenderPass(scene, camera));
+  const gtao = new GTAOPass(scene, camera, innerWidth, innerHeight); gtao.updateGtaoMaterial({ radius: R * 0.02, distanceExponent: 1.2, thickness: 1.2, scale: 1.1 }); composer.addPass(gtao);
+  composer.addPass(new UnrealBloomPass(new THREE.Vector2(innerWidth, innerHeight), 0.12, 0.6, 0.92));
+  composer.addPass(new OutputPass());
+  info.textContent = `${name}  ${size.x.toFixed(0)} x ${size.y.toFixed(0)}(h) x ${size.z.toFixed(0)} m · ${Math.round(tris)} tris`;
+  const loop = () => { requestAnimationFrame(loop); controls.update(); composer.render(); };
+  loop(); document.title = 'ready';
+} catch (e) { info.textContent = 'ERROR: ' + (e.stack || e); document.title = 'error'; }
+</script></body></html>

@@ -1,0 +1,41 @@
+Textures and HDRI in assets/textures and assets/hdri are from Poly Haven (polyhaven.com), licensed CC0.
+
+Third-party code in vendor/ (licence files sit next to each library):
+- three.js r170 — MIT
+- postprocessing 6.39.6 (pmndrs) — Zlib
+- N8AO 2.0.2 (N8python) — ISC / CC0
+- ez-tree 1.1.0 (dgreenheck) — MIT; the bark and leaf textures embedded in it are used for the street trees
+
+Vehicle models in assets/models/cars/ (sedan, suv, taxi, police, sports, van, bus):
+- derived from the CARLA Simulator vehicle set — "CARLA Simulator (carla.org)", licensed CC BY 4.0
+  (https://creativecommons.org/licenses/by/4.0/); glTF conversion by Valdrada (M. K. Turkcan), taken from the
+  Hugging Face dataset mehmetkeremturkcan/valdrada, Content/models/fleet24/.
+- truck.glb: original model by M. K. Turkcan (Valdrada, "boxtruck26"), CC BY 4.0.
+- Changes made for this project (tools/models/build-cars.mjs): one level of detail kept, wheels split into separate
+  parts, textures resized and re-encoded, every manufacturer badge, model name, tyre / plate / livery lettering removed,
+  number plates, taxi / police / bus / truck markings and lamp glow replaced with this project's own.
+  Imagery showing these vehicles should carry "CARLA Simulator (carla.org), CC BY 4.0".
+
+Pedestrian models and animations in assets/models/people/:
+- Microsoft Rocketbox Avatar Library (https://github.com/microsoft/Microsoft-Rocketbox), MIT License,
+  Copyright (c) 2020 Microsoft Corporation. Avatars Female_Adult_01/03/05/08 and Male_Adult_01/04/09/12, animations
+  walk_neutral_01 and idle_neutral_01 (male and female). Converted with tools/blender/process_person.py (skeleton reduced
+  to 26 bones, textures resized, walk made an in-place loop).
+- Please cite: M. Gonzalez-Franco, E. Ofek, Y. Pan, A. Antley, A. Steed, B. Spanlang, A. Maselli, D. Banakou,
+  N. Pelechano, S. Orts-Escolano, V. Orvalho, L. Trutoiu, M. Wojcik, M. V. Sanchez-Vives, J. Bailenson, M. Slater,
+  J. Lanier (2020). "The Rocketbox Library and the Utility of Freely Available Rigged Avatars."
+  Frontiers in Virtual Reality 1:561558. doi:10.3389/frvir.2020.561558
+
+Map data in data-src/ and the src/data/*.json files generated from it:
+- © OpenStreetMap contributors, available under the Open Database License (ODbL) 1.0
+  (https://www.openstreetmap.org/copyright). Extract from Geofabrik's Henan file.
+  Any public use of the map (screenshots, videos, the game itself) must credit "© OpenStreetMap contributors".
+
+AI-generated landmark models in assets/models/ (baimasi, lijingmen, tiantang, yingtianmen, yingtianmen_t2m,
+mingtang_hf_shape) and assets/hf3d/:
+- generated with Tencent Hunyuan3D (image-to-3D, via WorkBuddy and the Hunyuan3D Hugging Face Space) from concept
+  images made for this project with Google Gemini; assets/hf3d/mingtang_in.png and assets/preview/ are those
+  inputs / previews. Use of these files is also subject to the Tencent Hunyuan 3D community licence terms.
+  The game falls back to its own code-built landmark models when a GLB is missing (or with ?noglb in the URL).
+
+Everything else (code, code-built models, data tooling) is this project's own work, MIT licensed (see LICENSE).

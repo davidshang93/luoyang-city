@@ -1,0 +1,14 @@
+{
+  "_readme": "手写的“立面说明”：给核心区沿街最显眼的几栋楼单独指定立面，其余的楼仍按规则自动生成。at = 楼内任意一点的坐标 [x, z]（米）；sk = 楼型（res 高层住宅 / old 老砖楼 / office 玻璃写字楼 / com 商业 / pub 公建 / vil 村镇小楼）；wall = 墙面颜色；balc = 南立面做法（0 封闭阳台 / 1 开敞阳台 / 2 飘窗）；accent = 是否有深色横向色带；crown = 屋顶是否有构架。这里的风格是按观感指定的，没有对照真实照片。本文件是手写数据，不由 build-data 生成。",
+  "specs": [
+    { "at": [207, -336], "note": "中州中路北侧高层住宅", "sk": "res", "wall": "0xe6dcc6", "balc": 0, "accent": false, "crown": true },
+    { "at": [573, -498], "note": "中州中路 98 米塔楼，做成玻璃幕墙写字楼", "sk": "office", "wall": "0xd9f2ff" },
+    { "at": [-345, -397], "note": "唐宫中路高层住宅", "sk": "res", "wall": "0xcfc6b8", "balc": 2, "accent": true, "crown": false },
+    { "at": [-126, -648], "note": "唐宫东路高层住宅", "sk": "res", "wall": "0xd4dadd", "balc": 0, "accent": true, "crown": true },
+    { "at": [-62, 218], "note": "定鼎大道 92 米高层住宅", "sk": "res", "wall": "0xeeeae0", "balc": 0, "accent": true, "crown": true },
+    { "at": [128, -651], "note": "唐宫东路大体量公建", "sk": "pub", "wall": "0xdcd6c8" },
+    { "at": [390, -520], "note": "中州中路南侧商业楼", "sk": "com", "wall": "0xd8d2c4" },
+    { "at": [112, -377], "note": "中州中路住宅，暖色涂料 + 开敞阳台", "sk": "res", "wall": "0xd2a184", "balc": 1, "accent": false, "crown": false },
+    { "at": [562, -582], "note": "中州中路南侧商业楼，深灰石材", "sk": "com", "wall": "0xa9a59c" }
+  ]
+}

@@ -1,0 +1,13 @@
+<!doctype html><meta charset="utf-8"><title>bridge</title>
+<body style="font:14px sans-serif">参考图中转页（把本地参考图通过 postMessage 交给打开它的页面）。<pre id="log"></pre>
+<script>
+// bridge.html?ids=a,b,c  → posts {type:'ref-image', id, buf(ArrayBuffer)} to window.opener for each id
+const ids = (new URLSearchParams(location.search).get('ids') || '').split(',').filter(Boolean), log = document.getElementById('log');
+(async () => {
+  for (const id of ids) {
+    try { const buf = await (await fetch('/assets/refs/' + id + '.jpg')).arrayBuffer(); window.opener.postMessage({ type: 'ref-image', id, buf }, '*', [buf]); log.textContent += 'sent ' + id + '\n'; }
+    catch (e) { log.textContent += 'ERR ' + id + ' ' + e + '\n'; }
+  }
+  window.opener.postMessage({ type: 'ref-done' }, '*');
+})();
+</script>

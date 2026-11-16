@@ -1,0 +1,11 @@
+node_modules/
+.DS_Store
+assets/hy3d/
+assets/refs/
+.venv/
+assets/third_party_raw/
+# art-style experiment, kept local (large animations, work in progress)
+docs/perspective-illusion-trial/
+*.command
+# LoveAIGame creator key (private)
+.loveaigame

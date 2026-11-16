@@ -1,0 +1,90 @@
+[
+ {
+  "id": "f01",
+  "file": "f01.glb",
+  "sex": "f",
+  "height": 1.74,
+  "walkDuration": 1.2,
+  "walkSpeed": 1.214,
+  "bones": 26,
+  "tris": 8732,
+  "bytes": 1031544
+ },
+ {
+  "id": "f03",
+  "file": "f03.glb",
+  "sex": "f",
+  "height": 1.74,
+  "walkDuration": 1.2,
+  "walkSpeed": 1.214,
+  "bones": 26,
+  "tris": 9208,
+  "bytes": 1084180
+ },
+ {
+  "id": "f05",
+  "file": "f05.glb",
+  "sex": "f",
+  "height": 1.74,
+  "walkDuration": 1.2,
+  "walkSpeed": 1.214,
+  "bones": 26,
+  "tris": 8288,
+  "bytes": 1157508
+ },
+ {
+  "id": "f08",
+  "file": "f08.glb",
+  "sex": "f",
+  "height": 1.74,
+  "walkDuration": 1.2,
+  "walkSpeed": 1.214,
+  "bones": 26,
+  "tris": 8276,
+  "bytes": 1000424
+ },
+ {
+  "id": "m01",
+  "file": "m01.glb",
+  "sex": "m",
+  "height": 1.82,
+  "walkDuration": 1.2,
+  "walkSpeed": 1.012,
+  "bones": 26,
+  "tris": 7440,
+  "bytes": 975212
+ },
+ {
+  "id": "m04",
+  "file": "m04.glb",
+  "sex": "m",
+  "height": 1.87,
+  "walkDuration": 1.2,
+  "walkSpeed": 1.012,
+  "bones": 26,
+  "tris": 8684,
+  "bytes": 967096
+ },
+ {
+  "id": "m09",
+  "file": "m09.glb",
+  "sex": "m",
+  "height": 1.82,
+  "walkDuration": 1.2,
+  "walkSpeed": 1.012,
+  "bones": 26,
+  "tris": 7426,
+  "bytes": 834988
+ },
+ {
+  "id": "m12",
+  "file": "m12.glb",
+  "sex": "m",
+  "height": 1.81,
+  "walkDuration": 1.2,
+  "walkSpeed": 1.012,
+  "bones": 26,
+  "tris": 6722,
+  "bytes": 623780
+ }
+]
