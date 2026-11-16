@@ -2,6 +2,13 @@
 
 最后更新：2026-11-14 深夜（车和行人已换成现成的写实模型；v3 试点见下一节）
 
+
+## ▶ 已公开 + 上了 LoveAIGame 共创（2026-11-16 晚，loveaigame 那边的会话做的）
+- 仓库公开在 https://github.com/davidshang93/luoyang-city （David 选 MIT；地图数据 ODbL；混元 3D 生成的地标模型按 David 的决定一起公开，来源写在 `assets/CREDITS.txt`）。以后改完要 `git push`（提交、推送仍等 David 说）。
+- 试玩：https://davidshang93.github.io/luoyang-city/ （GitHub Pages，推送 main 后一两分钟自动更新；根目录的 `.nojekyll` 不能删，否则 `_kit.js` 这类下划线开头的文件会 404）。
+- **没进仓库**：`docs/perspective-illusion-trial/`（画风试作，动图太大）和 `*.command`，已写进 `.gitignore`；`assets/refs`、`assets/hy3d`、`assets/third_party_raw` 照旧不进。
+- 共创页：https://loveaigame.com/zh/cocreate/luoyang-city ，6 个任务（音效、手机触屏、跑步动画、中国路人、城市公交、新地标）。别人提交的 PR 要 David 验收：在 https://loveaigame.com/zh/studio 用 `.loveaigame` 里的密钥登录（这个文件已 gitignore，不要提交、不要打印）。
+
 ## ▶ 车和行人换成现成模型（2026-11-14 深夜完成，未提交 git）
 改前/改后同机位对比图在 `docs/compare-2026-11-14-models/`（10 张，上半是改前、下半是改后）。**等 David 看图。**
 
